@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "financial_data")
 public class FinancialData {
 
-
+    @Id
     private String name;
     private String asOf;
     private Payload payload;

@@ -2,9 +2,9 @@ package com.example.kafka.service;
 
 public interface KafkaProducerService {
 
-    void startProducer();
+    void startProducer() throws InterruptedException;
 
-    void runProducer();
+    void runProducer() throws InterruptedException;
 
     void stopProducer();
 

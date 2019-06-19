@@ -1,12 +1,14 @@
 package com.example.kafka.models;
 
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "financial_data_master")
 public class FinancialDataMaster {
 
 
+    @Id
     private String name;
     private String asOf;
     private Payload payload;

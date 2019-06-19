@@ -8,24 +8,48 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ProducerController {
 
-    @Autowired
     KafkaProducerService kafkaProducerService;
 
-    @GetMapping("/startProducer")
+    public ProducerController(KafkaProducerService kafkaProducerService){
+        this.kafkaProducerService=kafkaProducerService;
+    }
+
+    @GetMapping("/start-producer")
     public String startProducer(){
-        kafkaProducerService.startProducer();
-        return "started";
+        try{
+            kafkaProducerService.startProducer();
+            return "started";
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return "error";
+        }
+
     }
 
-    @GetMapping("/stopProducer")
+    @GetMapping("/stop-producer")
     public String stopProducer(){
-        kafkaProducerService.stopProducer();
-        return "stopped";
+        try{
+            kafkaProducerService.stopProducer();
+            return "stopped";
+        }
+
+         catch (Exception e){
+            e.printStackTrace();
+            return "error";
+        }
     }
 
-    @GetMapping("/interruptProducer")
+    @GetMapping("/interrupt-producer")
     public String interruptProducer(){
-        kafkaProducerService.interruptProducer();
-        return "interruptted";
+        try{
+            kafkaProducerService.interruptProducer();
+            return "interruptted";
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return "error";
+        }
+
     }
 }

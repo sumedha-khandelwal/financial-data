@@ -2,14 +2,14 @@ package com.example.kafka.models;
 
 public class Payload {
 
-    private double price;
+    private Double price;
     private String addInfo;
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 

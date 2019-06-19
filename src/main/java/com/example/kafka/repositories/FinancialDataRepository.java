@@ -6,4 +6,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface FinancialDataRepository extends MongoRepository<FinancialData, Object> {
+
+    void deleteAllByAsOfGreaterThanEqual(String asOf);
+
+    void deleteAllByAsOfBetween(String asOf,String asOf2);
+
 }

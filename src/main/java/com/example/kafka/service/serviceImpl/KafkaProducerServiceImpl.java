@@ -23,15 +23,22 @@ public class KafkaProducerServiceImpl implements KafkaProducerService {
 
     Logger logger = LoggerFactory.getLogger(KafkaProducerServiceImpl.class.getName());
 
-    @Autowired
+
     private KafkaTemplate<String, Data> kafkaTemplate;
+
+    private KafkaTemplate<String, Data> kafkaTemplate2;
+
+    public KafkaProducerServiceImpl(KafkaTemplate<String, Data> kafkaTemplate, KafkaTemplate<String, Data> kafkaTemplate2){
+        this.kafkaTemplate=kafkaTemplate;
+        this.kafkaTemplate2=kafkaTemplate2;
+    }
 
     private volatile String flag="start";
     BlockingQueue<Data> msgQueue = new LinkedBlockingQueue<Data>();
 
-    public void runProducer() {
+    public void runProducer() throws InterruptedException {
 
-        logger.info("Setup");
+        logger.info("Started Producer");
 
 
        Thread t1=new Thread(new Runnable() {
@@ -49,6 +56,8 @@ public class KafkaProducerServiceImpl implements KafkaProducerService {
        });
 
        t1.start();
+
+       Thread.sleep(1000);
 
         while (!(msgQueue.size() == 0) && !("close").equalsIgnoreCase(flag) && !("error").equalsIgnoreCase(flag)) {
             Data msg = null;
@@ -131,11 +140,17 @@ public class KafkaProducerServiceImpl implements KafkaProducerService {
 
 
     @Override
-    public void startProducer() {
+    public void startProducer() throws InterruptedException {
         Data d=new Data();
         d.setStatus("start");
-        kafkaTemplate.send(new ProducerRecord<String, Data>("financial_instruments", d));
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date date = new Date();
+        FinancialData fd=new FinancialData();
+        fd.setAsOf(dateFormat.format(date));
+        d.setFinancialData(fd);
+        kafkaTemplate2.send(new ProducerRecord<String, Data>("financial_instruments", d));
         flag="running";
+        msgQueue.clear();
         runProducer();
     }
 
@@ -143,14 +158,26 @@ public class KafkaProducerServiceImpl implements KafkaProducerService {
         Data d=new Data();
         d.setStatus("close");
         flag="close";
-        kafkaTemplate.send(new ProducerRecord<String, Data>("financial_instruments", d));
+        Date date = new Date();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        FinancialData fd=new FinancialData();
+        fd.setAsOf(dateFormat.format(date));
+        d.setFinancialData(fd);
+        msgQueue.clear();
+        kafkaTemplate2.send(new ProducerRecord<String, Data>("financial_instruments", d));
     }
 
     public void interruptProducer(){
         Data d=new Data();
         d.setStatus("error");
         flag="error";
-        kafkaTemplate.send(new ProducerRecord<String, Data>("financial_instruments", d));
+        Date date = new Date();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        FinancialData fd=new FinancialData();
+        fd.setAsOf(dateFormat.format(date));
+        d.setFinancialData(fd);
+        msgQueue.clear();
+        kafkaTemplate2.send(new ProducerRecord<String, Data>("financial_instruments", d));
     }
 
 }
