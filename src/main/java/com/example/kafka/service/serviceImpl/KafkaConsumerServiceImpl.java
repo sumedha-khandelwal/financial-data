@@ -41,7 +41,7 @@ public class KafkaConsumerServiceImpl implements KafkaConsumerService {
          if(item.getStatus()==null){
              return;
          }
-         if(("started").equals(item.getStatus())){
+         if(("start").equals(item.getStatus())){
              logger.info("Batch started");
              startTime=item.getFinancialData().getAsOf();
          }

@@ -29,7 +29,6 @@ public class MongoServiceImpl implements MongoService {
     private FinancialDataRepository financialDataRepository;
 
     @Override
-    @Async
     public void updateMaster(String startTime,String endTime){
         List<DBObject> ops = new ArrayList<DBObject>();
         ops.add(new BasicDBObject("$out", "financial_data_master")); // writes to collection "target"

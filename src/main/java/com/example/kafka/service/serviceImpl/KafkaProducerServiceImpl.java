@@ -56,9 +56,24 @@ public class KafkaProducerServiceImpl implements KafkaProducerService {
        });
 
        t1.start();
+        Thread.sleep(1000);
 
-       Thread.sleep(1000);
+       Thread t2=new Thread(new Runnable() {
+           @Override
+           public void run() {
+             sendData();
+           }
+       });
 
+       t2.start();
+
+
+
+
+        logger.info("End of application");
+    }
+
+    private void sendData(){
         while (!(msgQueue.size() == 0) && !("close").equalsIgnoreCase(flag) && !("error").equalsIgnoreCase(flag)) {
             Data msg = null;
             try {
@@ -71,7 +86,6 @@ public class KafkaProducerServiceImpl implements KafkaProducerService {
                 kafkaTemplate.send(new ProducerRecord<String, Data>("financial_instruments", msg));
             }
         }
-        logger.info("End of application");
     }
 
     private void createData1(BlockingQueue<Data> msgQueue) {
@@ -148,7 +162,7 @@ public class KafkaProducerServiceImpl implements KafkaProducerService {
         FinancialData fd=new FinancialData();
         fd.setAsOf(dateFormat.format(date));
         d.setFinancialData(fd);
-        kafkaTemplate2.send(new ProducerRecord<String, Data>("financial_instruments", d));
+        kafkaTemplate.send(new ProducerRecord<String, Data>("financial_instruments", d));
         flag="running";
         msgQueue.clear();
         runProducer();
@@ -164,7 +178,7 @@ public class KafkaProducerServiceImpl implements KafkaProducerService {
         fd.setAsOf(dateFormat.format(date));
         d.setFinancialData(fd);
         msgQueue.clear();
-        kafkaTemplate2.send(new ProducerRecord<String, Data>("financial_instruments", d));
+        kafkaTemplate.send(new ProducerRecord<String, Data>("financial_instruments", d));
     }
 
     public void interruptProducer(){
@@ -177,7 +191,7 @@ public class KafkaProducerServiceImpl implements KafkaProducerService {
         fd.setAsOf(dateFormat.format(date));
         d.setFinancialData(fd);
         msgQueue.clear();
-        kafkaTemplate2.send(new ProducerRecord<String, Data>("financial_instruments", d));
+        kafkaTemplate.send(new ProducerRecord<String, Data>("financial_instruments", d));
     }
 
 }
